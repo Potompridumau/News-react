@@ -8,16 +8,21 @@ import Pagination from '../../components/Pagination/Pagination';
 
 import styles from './styles.module.css';
 import Categories from '../../components/Categories/Categories';
+import Search from '../../components/Search/Search';
+import { useDebounce } from '../../helpers/hooks/useDebounce';
 
 const Main = () => {
 
     const [news, setNews] = useState([])
     const [categories, setCategories] = useState([])
     const [selectedCategory, setSelectedCategory] = useState('All')
+    const [keywords, setKeywords] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
     const totalPages = 10
     const pageSize = 10
+
+    const debouncedKeywords = useDebounce(keywords, 1500)
 
     const fetchNews = async (currentPage) => {
         try {
@@ -25,7 +30,8 @@ const Main = () => {
             const res = await getNews({
                 page_number: currentPage,
                 page_size: pageSize,
-                category: selectedCategory === 'All' ? null : selectedCategory
+                category: selectedCategory === 'All' ? null : selectedCategory,
+                keywords: debouncedKeywords
             })
             setNews(res.news)
             setIsLoading(false)
@@ -49,7 +55,7 @@ const Main = () => {
 
     useEffect(() => {
         fetchNews(currentPage)
-    }, [currentPage, selectedCategory])
+    }, [currentPage, selectedCategory, debouncedKeywords])
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -67,9 +73,20 @@ const Main = () => {
         setCurrentPage(pageNumber)
     }
 
+
+
     return (
         <main className={styles.main}>
-            <Categories categories={categories} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />
+            <Categories
+                categories={categories}
+                setSelectedCategory={setSelectedCategory}
+                selectedCategory={selectedCategory}
+            />
+
+            <Search
+                keywords={keywords}
+                setKeywords={setKeywords}
+            />
 
             {news.length > 0 && !isLoading ?
                 <NewsBanner item={news[0]} /> :

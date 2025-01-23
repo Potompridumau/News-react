@@ -9,9 +9,7 @@ const Skeleton = ({ count = 1, type = 'banner' }) => {
                 (
                     <ul className={styles.list}>
                         {[...Array(count)].map((_, index) => {
-                            <li key={index} className={type === 'banner' ? styles.banner : styles.item}>
-
-                            </li>
+                            <li key={index} className={type === 'banner' ? styles.banner : styles.item}></li>
                         })}
                     </ul>
                 ) :
