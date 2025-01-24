@@ -20,6 +20,19 @@ export const getNews = async ({ page_number = 1, page_size = 10, category, keywo
     }
 }
 
+export const getLatestNews = async () => {
+    try {
+        const res = await axios.get(`${BASE_URL}latest-news`, {
+            params: {
+                apiKey: API_KEY
+            }
+        })
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export const getCategories = async () => {
     try {
         const res = await axios.get(`${BASE_URL}available/categories`, {
